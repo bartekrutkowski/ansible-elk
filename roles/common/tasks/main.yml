@@ -1,0 +1,6 @@
+---
+- name: install epel repository
+  yum: pkg={{item}} state=present
+  with_items:
+    - epel-release
+  when: ansible_os_family == "RedHat"

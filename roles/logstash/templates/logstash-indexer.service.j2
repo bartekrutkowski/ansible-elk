@@ -1,0 +1,36 @@
+[Unit]
+Description=Logstash Indexer
+Documentation=http://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+PIDFile=/var/run/logstash/logstash-indexer.pid
+EnvironmentFile=-/etc/logstash/logstash-indexer.env
+
+Nice=0
+ExecStart=/opt/logstash/bin/logstash agent -f $LS_CONF_DIR -l $LS_LOG_FILE {{ debug_level | default('') }}
+
+User=logstash
+Group=logstash
+
+WorkingDirectory=/opt/logstash
+Restart=always
+
+# Connects standard output to /dev/null
+StandardOutput=null
+
+# Connects standard error to journal
+StandardError=journal
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65535
+
+# Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

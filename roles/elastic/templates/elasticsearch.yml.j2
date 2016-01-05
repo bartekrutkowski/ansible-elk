@@ -1,0 +1,44 @@
+cluster.name: {{ elastic_cluster_name }}
+
+node.name: {{ ansible_hostname }}
+
+index.number_of_shards: {{ elastic_shards_number }}
+
+index.number_of_replicas: {{ elastic_replicas_number }}
+
+bootstrap.mlockall: true
+
+path.data: {{ elastic_data_dir }}
+
+network.host: {{ ansible_default_ipv4.address }}
+
+discovery.type: zen
+
+discovery.zen.minimum_master_nodes: 1
+discovery.zen.ping.multicast.enabled: true
+discovery.zen.ping.multicast.group: 224.2.2.4
+discovery.zen.ping.multicast.port: 54328
+discovery.zen.ping.multicast.ttl: 3
+discovery.zen.ping.multicast.address: null
+
+#http.cors.enabled: true
+#http.cors.allow-origin:  /http?:\/\/<%= @cluster_alias %>(:[0-9]+)?/
+
+script.groovy.sandbox.enabled: {{ elastic_groovy_enabled }}
+
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.query.info: 5s
+index.search.slowlog.threshold.query.debug: 2s
+index.search.slowlog.threshold.query.trace: 500ms
+
+index.search.slowlog.threshold.fetch.warn: 1s
+index.search.slowlog.threshold.fetch.info: 800ms
+index.search.slowlog.threshold.fetch.debug: 500ms
+index.search.slowlog.threshold.fetch.trace: 200ms
+
+index.indexing.slowlog.threshold.index.warn: 10s
+index.indexing.slowlog.threshold.index.info: 5s
+index.indexing.slowlog.threshold.index.debug: 2s
+index.indexing.slowlog.threshold.index.trace: 500ms
+
+threadpool.search.queue_size: 2000

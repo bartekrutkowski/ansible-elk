@@ -1,0 +1,39 @@
+---
+- include: common.yml
+
+- name: create logstash-shipper systemd service
+  template: src=logstash-shipper.service.j2 dest=/usr/lib/systemd/system/logstash-shipper.service
+  notify: restart logstash-shipper
+
+- name: create logstash-shipper env file
+  template: src=logstash-shipper.env.j2 dest=/etc/logstash/logstash-shipper.env
+  notify: restart logstash-shipper
+
+- name: create logstash-shipper conf.d dir
+  file: dest=/etc/logstash/shipper/conf.d state=directory
+
+- name: create logstash-shipper input config
+  template: src=10-input.conf-shipper.j2 dest=/etc/logstash/shipper/conf.d/10-input.conf
+  notify: restart logstash-shipper
+
+- name: create logstash-shipper filter config
+  template: src=20-filter.conf-shipper.j2 dest=/etc/logstash/shipper/conf.d/20-filter.conf
+  notify: restart logstash-shipper
+
+- name: create logstash-shipper output config
+  template: src=30-output.conf-shipper.j2 dest=/etc/logstash/shipper/conf.d/30-output.conf
+  notify: restart logstash-shipper
+
+- name: create logstash-shipper ssl dir
+  file: dest=/etc/logstash/shipper/ssl state=directory
+
+- name: create logstash-forwarder ssl key file
+  copy: src={{ logstash_ssl_pem }}.key dest=/etc/logstash/shipper/ssl/logstash-forwarder.key
+  notify: restart logstash-shipper
+
+- name: create logstash-forwarder ssl cert file
+  copy: src={{ logstash_ssl_pem }}.crt dest=/etc/logstash/shipper/ssl/logstash-forwarder.crt
+  notify: restart logstash-shipper
+
+- name: enable logstash-shipper systemd service
+  service: name=logstash-shipper state=started enabled=yes

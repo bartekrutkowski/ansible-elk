@@ -1,0 +1,28 @@
+---
+- include: common.yml
+
+- name: create logstash-indexer systemd service
+  template: src=logstash-indexer.service.j2 dest=/usr/lib/systemd/system/logstash-indexer.service
+  notify: restart logstash-indexer
+
+- name: create logstash-indexer env file
+  template: src=logstash-indexer.env.j2 dest=/etc/logstash/logstash-indexer.env
+  notify: restart logstash-indexer
+
+- name: create logstash-indexer conf.d dir
+  file: dest=/etc/logstash/indexer/conf.d state=directory
+
+- name: create logstash-indexer input config
+  template: src=10-input.conf-indexer.j2 dest=/etc/logstash/indexer/conf.d/10-input.conf
+  notify: restart logstash-indexer
+
+- name: create logstash-indexer filter config
+  template: src=20-filter.conf-indexer.j2 dest=/etc/logstash/indexer/conf.d/20-filter.conf
+  notify: restart logstash-indexer
+
+- name: create logstash-indexer output config
+  template: src=30-output.conf-indexer.j2 dest=/etc/logstash/indexer/conf.d/30-output.conf
+  notify: restart logstash-indexer
+
+- name: enable logstash-indexer systemd service
+  service: name=logstash-indexer state=started enabled=yes

@@ -1,0 +1,31 @@
+---
+- name: download and verify Kibana archive
+  get_url: url={{ kibana_url }} sha256sum={{ kibana_archive_sha256 }} dest=/tmp/kibana-{{ kibana_version }}.tar.gz
+
+- name: create kibana system account
+  user: name=kibana home=/opt/kibana shell=/bin/true comment="Managed by Ansible"
+
+- name: extract downloaded Kibana archive
+  unarchive: src=/tmp/kibana-{{ kibana_version }}.tar.gz dest=/tmp copy=no owner=kibana group=kibana
+
+- name: stop existing kibana process before copying sources
+  service: name=kibana state=stopped
+  ignore_errors: yes
+
+- name: copy extracted Kibana sources to /opt/kibana
+  shell: cp -R /tmp/kibana-{{ kibana_version }}-linux-x64/* /opt/kibana/
+
+- name: set /opt/kibana ownership
+  shell: chown -R kibana:kibana /opt/kibana
+
+- name: create Kibana config
+  template: src=kibana.yml.j2 dest=/opt/kibana/config/kibana.yml
+  notify: restart kibana
+
+- name: create Kibana systemd service
+  copy: src=kibana.service dest=/usr/lib/systemd/system/kibana.service
+  notify: restart kibana
+
+- name: enable Kibana systemd service
+  service: name=kibana state=started enabled=yes
+

@@ -1,0 +1,9 @@
+---
+- name: restart logstash-shipper
+  service: name=logstash-shipper state=restarted
+
+- name: restart logstash-indexer
+  service: name=logstash-indexer state=restarted
+
+- name: restart logstash-forwarder
+  service: name=logstash-forwarder state=restarted

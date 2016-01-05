@@ -1,0 +1,13 @@
+# logstash input configuration
+
+input {
+    lumberjack {
+        port => 1514
+        ssl_certificate => "/etc/logstash/shipper/ssl/logstash-forwarder.crt"
+        ssl_key => "/etc/logstash/shipper/ssl/logstash-forwarder.key"
+    }
+    syslog {
+        type => "syslog"
+        port => 5514
+    }
+}

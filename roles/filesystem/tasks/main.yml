@@ -1,0 +1,9 @@
+---
+- name: create the {{ fstype }} filesystem on /dev/{{ dev }}
+  filesystem: fstype={{ fstype }} dev=/dev/{{ dev }}
+
+- name: create the {{ mountpoint }} mountpoint
+  file: dest={{ mountpoint }} state=directory
+
+- name: mount the filesystem under {{ mountpoint }}
+  mount: name={{ mountpoint }} src=/dev/{{ dev }} fstype={{ fstype }} state=mounted

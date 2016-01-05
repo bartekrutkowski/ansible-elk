@@ -1,0 +1,21 @@
+---
+- name: install redis
+  yum: pkg=redis state=present
+
+- name: create redis config file
+  template: src=redis.conf.j2 dest={{ redis_conf }}
+  notify: restart redis
+
+- name: set memory sysctl required by redis
+  sysctl: name=vm.overcommit_memory value=1 state=present
+  notify: restart redis
+
+- name: set connection sysctl required by redis
+  sysctl: name=net.core.somaxconn value=2048 state=present
+  notify: restart redis
+
+- name: disable THP support in kernel
+  lineinfile: dest=/etc/rc.local regexp='^echo.never.>.*hugepage\/enabled$' line='echo never > /sys/kernel/mm/transparent_hugepage/enabled' mode=0755 state=present
+
+- name: enable and start redis-server
+  service: name=redis state=started enabled=yes

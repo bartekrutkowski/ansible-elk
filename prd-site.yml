@@ -1,0 +1,40 @@
+---
+- hosts: all
+  sudo: true
+  roles:
+  - role: common
+
+- hosts: redis
+  sudo: true
+  roles:
+  - role: redis
+
+- hosts: elastic
+  sudo: true
+  roles:
+  - { role: filesystem, mountpoint: /mnt/elastic, fstype: xfs, dev: vdb }
+  - role: java
+  - role: elastic
+
+- hosts: logstash-shipper
+  sudo: true
+  roles:
+  - role: java
+  - { role: logstash, logstash_type: shipper }
+
+- hosts: logstash-indexer
+  sudo: true
+  roles:
+  - role: java
+  - { role: logstash, logstash_type: indexer }
+
+- hosts: kibana
+  sudo: true
+  roles:
+  - role: kibana
+  - { role: nginx, nginx_type: kibana, server_name: kibana.prd.example.com }
+
+- hosts: logger
+  sudo: true
+  roles:
+  - { role: logstash, logstash_type: forwarder }

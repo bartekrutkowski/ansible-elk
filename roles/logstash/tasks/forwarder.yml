@@ -1,0 +1,24 @@
+---
+- name: install elasticsearch YUM repository GPG key
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: add logstash-forwarder repository to YUM repositories
+  copy: src=logstash-forwarder.repo dest=/etc/yum.repos.d/logstash-forwarder.repo
+
+- name: install logstash-forwarder
+  yum: pkg=logstash-forwarder state=present
+
+- name: create logstash-forwarder config file
+  template: src=forwarder.json.j2 dest=/etc/logstash-forwarder.conf
+  notify: restart logstash-forwarder
+
+- name: create logstash ssl dir
+  file: dest=/etc/logstash/ssl state=directory
+
+- name: create logstash-forwarder ssl key file
+  copy: src={{ logstash_ssl_pem }}.key dest=/etc/logstash/ssl/logstash-forwarder.key
+  notify: restart logstash-forwarder
+
+- name: create logstash-forwarder ssl cert file
+  copy: src={{ logstash_ssl_pem }}.crt dest=/etc/logstash/ssl/logstash-forwarder.crt
+  notify: restart logstash-forwarder

@@ -1,0 +1,15 @@
+---
+- name: install elasticsearch YUM repository GPG key
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: add logstash repository to YUM repository
+  template: src=logstash.repo.j2 dest=/etc/yum.repos.d/logstash.repo
+
+- name: install logstash
+  yum: pkg=logstash state=present
+
+- name: stop and disable logstash service
+  service: name=logstash state=stopped enabled=no
+
+- name: delete logstash init file
+  file: path=/etc/init.d/logstash state=absent

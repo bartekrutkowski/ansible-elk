@@ -1,0 +1,10 @@
+# logstash input configuration
+
+input {
+    redis {
+        host => "{{ redis_name }}"
+        port => 6379
+        data_type => "list"
+        key => "logstash"
+    }
+}

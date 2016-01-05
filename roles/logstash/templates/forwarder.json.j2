@@ -1,0 +1,16 @@
+{
+    "network": {
+        "servers": [ {% for host in groups['logstash-shipper']%} "{{host}}:1514" {% if not loop.last%}, {%
+               endif %}{%endfor%} ],
+        "ssl key": "/etc/logstash/ssl/logstash-forwarder.key",
+        "ssl ca": "/etc/logstash/ssl/logstash-forwarder.crt",
+        "timeout": 15
+    },
+
+    "files": [
+        {
+            "paths": ["/var/log/foobar.log"],
+            "fields": { "type": "foobartype" }
+        }
+    ]
+}

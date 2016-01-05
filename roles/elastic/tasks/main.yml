@@ -1,0 +1,23 @@
+---
+- name: install elasticsearch YUM repository GPG key
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: add elasticsearch repository to YUM repository
+  template: src=elasticsearch.repo.j2 dest=/etc/yum.repos.d/elasticsearch.repo
+
+- name: install elasticsearch
+  yum: pkg=elasticsearch state=present
+
+- name: set up elastic data dir ownership
+  file: path={{ elastic_data_dir }} owner=elasticsearch group=elasticsearch
+
+- name: create elasticsearch configuration
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
+  notify: restart elasticsearch
+
+- name: create elasticsearch sysconfig configuration
+  template: src=elasticsearch.env.j2 dest=/etc/sysconfig/elasticsearch
+  notify: restart elasticsearch
+
+- name: enable elasticsearch
+  service: name=elasticsearch state=started enabled=yes

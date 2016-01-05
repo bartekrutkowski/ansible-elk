@@ -1,0 +1,14 @@
+# logstash output configuration
+
+# Define outputs
+output {
+    elasticsearch {
+        host => ["{{ elasticsearch_name }}"]
+        workers => 1
+        index => "logstash-%{+YYYY.MM.dd}"
+        manage_template => true
+        template_name => "logstash"
+        flush_size => 1000
+        protocol => "http"
+    }
+}

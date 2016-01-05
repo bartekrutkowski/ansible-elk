@@ -1,0 +1,14 @@
+# logstash output configuration
+
+# Define outputs
+output {
+    redis {
+        host      => "{{ redis_name }}"
+        port      => 6379
+        data_type => "list"
+        key       => "logstash"
+        batch     => true
+        batch_events => 1500
+        workers   => 3
+    }
+}

@@ -1,0 +1,23 @@
+logstash_ssl_pem: prd.example.com
+
+java_version: 1.8.0
+logstash_version: 1.5
+redis_name: redis-01-int.prd.example.com
+elasticsearch_name: elastic-lb-01-int.prd.example.com
+
+redis_conf: /etc/redis.conf
+redis_port: 6379
+redis_bind: 0.0.0.0
+redis_save: false
+redis_dir: /var/lib/redis/
+
+elastic_version: 1.7
+elastic_cluster_name: elastic-pool-01.prd.example.com
+elastic_shards_number: 8
+elastic_replicas_number: 1
+elastic_groovy_enabled: "true"
+elastic_data_dir: /mnt/elastic
+
+kibana_version: 4.1.2
+kibana_url: https://download.elastic.co/kibana/kibana/kibana-{{ kibana_version }}-linux-x64.tar.gz
+kibana_archive_sha256: 5f6213f7ac7ef71016a6750f09e7316ccc9bca139bc5389b417395b179bc370c
